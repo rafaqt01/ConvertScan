@@ -265,7 +265,9 @@ function ConnectDialog({ provider, onClose, onConnect, loading }: { provider: st
               </select>
             </div>
             <DialogFooter>
-              <Button variant="ghost" onClick={() => setStep('auth')>Voltar</Button>
+              <Button variant="ghost" onClick={() => setStep('auth')}>
+                Voltar
+              </Button>
               <Button onClick={onConnect} disabled={loading}>
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Finalizar'}
               </Button>
