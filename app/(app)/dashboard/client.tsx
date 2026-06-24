@@ -97,7 +97,7 @@ export function DashboardClient({ metrics, organizationName }: Props) {
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 flex-1 w-full">
-            <MiniMetric label="Aquisição" value={metrics.leads.current} delta={percentChange(metrics.leads.current, metrics.leads.previous)} format="compact" />
+            <MiniMetric label="Aquisição" value={metrics.leads.current} delta={percentChange(metrics.leads.current, metrics.leads.previous)} format="number" />
             <MiniMetric label="Conversão" value={`${metrics.conversionRate.toFixed(1)}%`} delta={2.4} />
             <MiniMetric label="Receita" value={metrics.revenue.current} format="currency" delta={metrics.monthlyGrowth} />
             <MiniMetric label="LTV / CAC" value={metrics.cac ? `${(metrics.ltv / metrics.cac).toFixed(1)}x` : '∞'} />
