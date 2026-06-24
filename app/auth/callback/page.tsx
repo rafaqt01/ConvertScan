@@ -1,17 +1,18 @@
 'use client';
 
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { Loader2 } from 'lucide-react';
 
-export default function AuthCallbackPage() {
+function AuthCallbackContent() {
   const router = useRouter();
   const params = useSearchParams();
   const next = params.get('next') || '/dashboard';
 
   useEffect(() => {
     const supabase = createBrowserSupabase();
+
     supabase.auth.onAuthStateChange((event) => {
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         router.push(next);
@@ -19,8 +20,8 @@ export default function AuthCallbackPage() {
       }
     });
 
-    // Fallback after 5s
     const t = setTimeout(() => router.push(next), 5000);
+
     return () => clearTimeout(t);
   }, [router, next]);
 
@@ -29,5 +30,13 @@ export default function AuthCallbackPage() {
       <Loader2 className="h-8 w-8 animate-spin text-primary" />
       <p className="text-sm text-muted-foreground">Conectando...</p>
     </div>
+  );
+}
+
+export default function AuthCallbackPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
