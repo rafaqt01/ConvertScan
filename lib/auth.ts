@@ -17,7 +17,11 @@ export async function getCurrentProfile() {
 
 export async function getCurrentOrganization() {
   const supabase = createServerSupabase();
-  const { data: { user } } = await supabase.auth.getUser();
+
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
   if (!user) return null;
 
   const { data: memberships } = await supabase
@@ -26,8 +30,9 @@ export async function getCurrentOrganization() {
     .eq('user_id', user.id)
     .limit(1);
 
-  const membership = memberships?.[0];
-  return membership?.organization ?? null;
+  const membership = memberships?.[0] as any;
+
+  return membership?.organization || null;
 }
 
 export async function getCurrentMembership() {
