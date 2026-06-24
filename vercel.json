@@ -5,9 +5,9 @@
   "framework": "nextjs",
   "regions": ["gru1"],
   "crons": [
-    { "path": "/api/cron/sync-integrations", "schedule": "0 */2 * * *" },
-    { "path": "/api/cron/run-automations", "schedule": "*/15 * * * *" },
-    { "path": "/api/cron/evaluate-alerts", "schedule": "0 * * * *" },
-    { "path": "/api/cron/ai-insights", "schedule": "0 8 * * *" }
+    { "path": "/api/cron/sync-integrations", "schedule": "0 0 * * *" },
+    { "path": "/api/cron/run-automations", "schedule": "5 0 * * *" },
+    { "path": "/api/cron/evaluate-alerts", "schedule": "10 0 * * *" },
+    { "path": "/api/cron/ai-insights", "schedule": "15 0 * * *" }
   ]
 }
