@@ -66,7 +66,7 @@ export function Topbar({ user, organizationName, alertCount = 0 }: TopbarProps) 
               <p className="text-xs text-muted-foreground truncate">{user.email}</p>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Perfil</DropdownMenuMenuItem>
+            <DropdownMenuItem>Perfil</DropdownMenuItem>
             <DropdownMenuItem>Configurações</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="text-destructive focus:text-destructive">Sair</DropdownMenuItem>
