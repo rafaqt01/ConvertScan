@@ -220,14 +220,17 @@ function Stat({ label, value, accent, danger }: { label: string; value: number; 
 }
 
 function ConnectDialog({ provider, onClose, onConnect, loading }: { provider: string | null; onClose: () => void; onConnect: () => void; loading: boolean }) {
-  const p = PROVIDERS.find((x) => x.id === provider);
-  const [step, setStep] = useState<'auth' | 'config'>('auth');
+ const p = PROVIDERS.find((x) => x.id === provider);
+
+if (!p) return null;
+
+const [step, setStep] = useState<'auth' | 'config'>('auth');
 
   return (
     <Dialog open={!!provider} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Conectar {p?.name}</DialogTitle>
+          <DialogTitle>Conectar {p.name}</DialogTitle>
         </DialogHeader>
         {step === 'auth' && (
           <div className="space-y-3">
@@ -235,10 +238,10 @@ function ConnectDialog({ provider, onClose, onConnect, loading }: { provider: st
               Você será redirecionado para autorizar a conexão via OAuth. Após autorizar, volte aqui para configurar.
             </p>
             <div className="flex items-center gap-2 rounded-md border border-border bg-muted/30 p-3">
-              <p.icon className="h-5 w-5" style={{ color: p?.color }} />
+              <p.icon className="h-5 w-5" style={{ color: p.color }} />
               <div className="flex-1">
-                <p className="text-sm font-medium">{p?.name}</p>
-                <p className="text-xs text-muted-foreground">{p?.description}</p>
+                <p className="text-sm font-medium">{p.name}</p>
+                <p className="text-xs text-muted-foreground">{p.description}</p>
               </div>
             </div>
             <DialogFooter>
