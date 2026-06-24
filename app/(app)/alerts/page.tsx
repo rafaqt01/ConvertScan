@@ -13,18 +13,12 @@ export default async function AlertsPage() {
     redirect('/onboarding');
   }
 
-  const organizationId = Array.isArray(org) ? org[0]?.id : org.id;
-
-  if (!organizationId) {
-    redirect('/onboarding');
-  }
-
   const supabase = createServerSupabase();
 
   const { data: alerts } = await supabase
     .from('alerts')
     .select('*')
-    .eq('organization_id', organizationId)
+    .eq('organization_id', org.id)
     .order('created_at', { ascending: false })
     .limit(200);
 
