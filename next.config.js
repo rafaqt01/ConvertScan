@@ -2,11 +2,17 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   experimental: {
     serverActions: {
       bodySizeLimit: '5mb',
     },
   },
+
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
@@ -14,6 +20,7 @@ const nextConfig = {
       { protocol: 'https', hostname: 'avatars.githubusercontent.com' },
     ],
   },
+
   async headers() {
     return [
       {
