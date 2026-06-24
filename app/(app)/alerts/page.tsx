@@ -8,13 +8,23 @@ export const dynamic = 'force-dynamic';
 
 export default async function AlertsPage() {
   const org = await getCurrentOrganization();
-  if (!org) redirect('/onboarding');
+
+  if (!org) {
+    redirect('/onboarding');
+  }
+
+  const organizationId = Array.isArray(org) ? org[0]?.id : org.id;
+
+  if (!organizationId) {
+    redirect('/onboarding');
+  }
 
   const supabase = createServerSupabase();
+
   const { data: alerts } = await supabase
     .from('alerts')
     .select('*')
-    .eq('organization_id', org.id)
+    .eq('organization_id', organizationId)
     .order('created_at', { ascending: false })
     .limit(200);
 
