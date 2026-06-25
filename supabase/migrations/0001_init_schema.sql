@@ -524,7 +524,11 @@ create or replace function has_org_role(roles user_role[]) returns boolean langu
   select exists (
     select 1 from memberships
     where user_id = auth.uid()
-      and organization_id = any(auth_org_ids())
+      and organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+)
       and role = any(roles)
   );
 $$;
@@ -535,15 +539,27 @@ create policy "profiles self update" on profiles for update using (id = auth.uid
 create policy "profiles self insert" on profiles for insert with check (id = auth.uid());
 
 -- ===== Memberships =====
-create policy "members read own orgs" on memberships for select using (user_id = auth.uid() or organization_id = any(auth_org_ids()));
+create policy "members read own orgs" on memberships for select using (user_id = auth.uid() or organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));
 create policy "admins manage memberships" on memberships for all using (has_org_role(array['owner','admin']::user_role[]));
 
 -- ===== Organizations =====
-create policy "members read org" on organizations for select using (id = any(auth_org_ids()));
+create policy "members read org" on organizations for select using (id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));
 create policy "admins update org" on organizations for update using (has_org_role(array['owner','admin']::user_role[]));
 
 -- ===== Workspaces =====
-create policy "members read workspace" on workspaces for select using (organization_id = any(auth_org_ids()));
+create policy "members read workspace" on workspaces for select using (organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));
 create policy "admins manage workspace" on workspaces for all using (has_org_role(array['owner','admin']::user_role[]));
 
 -- ===== Tenant-scoped tables =====
@@ -559,10 +575,26 @@ declare
   ];
 begin
   foreach t in array tables loop
-    execute format('create policy "%I read" on %I for select using (organization_id = any(auth_org_ids()));', t, t);
-    execute format('create policy "%I insert" on %I for insert with check (has_org_role(array[''owner'',''admin'',''manager'',''sales'',''analyst'']::user_role[]) and organization_id = any(auth_org_ids()));', t, t);
-    execute format('create policy "%I update" on %I for update using (has_org_role(array[''owner'',''admin'',''manager'',''sales'']::user_role[]) and organization_id = any(auth_org_ids()));', t, t);
-    execute format('create policy "%I delete" on %I for delete using (has_org_role(array[''owner'',''admin'']::user_role[]) and organization_id = any(auth_org_ids()));', t, t);
+    execute format('create policy "%I read" on %I for select using (organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));', t, t);
+    execute format('create policy "%I insert" on %I for insert with check (has_org_role(array[''owner'',''admin'',''manager'',''sales'',''analyst'']::user_role[]) and organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));', t, t);
+    execute format('create policy "%I update" on %I for update using (has_org_role(array[''owner'',''admin'',''manager'',''sales'']::user_role[]) and organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));', t, t);
+    execute format('create policy "%I delete" on %I for delete using (has_org_role(array[''owner'',''admin'']::user_role[]) and organization_id = in (
+  select organization_id
+  from memberships
+  where user_id = auth.uid()
+));', t, t);
   end loop;
 end $$;
 
