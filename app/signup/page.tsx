@@ -40,6 +40,26 @@ export default function SignupPage() {
         setError(error.message);
         return;
       }
+
+      const result = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: `${window.location.origin}/auth/callback`,
+    data: {
+      full_name: fullName,
+      org_name: orgName,
+    },
+  },
+});
+
+console.log('SIGNUP RESULT:', result);
+
+if (result.error) {
+  console.error(result.error);
+  setError(result.error.message);
+  return;
+}
       toast.success('Conta criada! Configure sua organização para começar.');
       router.push('/onboarding');
     } finally {
